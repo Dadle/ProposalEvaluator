@@ -1,0 +1,7 @@
+.env
+.git
+.idea
+.ipynb_checkpoints
+__pycache__
+Example proposal
+venv
