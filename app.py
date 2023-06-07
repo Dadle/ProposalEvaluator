@@ -148,7 +148,8 @@ def main():
         st.write("I am unsure of how to explain our  competence in a compelling manner. Can you help me formulate some key points we should include in the propopsal to highlight our expertise?")
     user_question = st.text_input("Ask Jarvis a question about your proposal:", on_change=clear_submit)
     if user_question:
-        handle_userinput(user_question)
+        with st.spinner("Asking Jarvis for a response⏳"):
+            handle_userinput(user_question)
 
     with st.sidebar:
         st.subheader("Your documents")
