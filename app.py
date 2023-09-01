@@ -146,7 +146,13 @@ def main():
         st.write("What likelihood score between 0 and 100% would you give this proposal of being accepted by the customer given how well it covers the expectations outlined in the RFP?")
         st.write("How can we improve this proposal to achieve a score above 80%")
         st.write("I am unsure of how to explain our  competence in a compelling manner. Can you help me formulate some key points we should include in the propopsal to highlight our expertise?")
-    user_question = st.text_input("Ask Jarvis a question about your proposal:", on_change=clear_submit)
+    documents_are_missing = True
+    if st.session_state["rfp_vectorstore"] and st.session_state["proposal_vectorstore"]:
+        documents_are_missing = False
+    user_question = st.text_input("Ask Jarvis a question about your proposal:",
+                                  on_change=clear_submit,
+                                  disabled=documents_are_missing)
+    print(documents_are_missing)
     if user_question:
         with st.spinner("Asking Jarvis for a response⏳"):
             handle_userinput(user_question)
