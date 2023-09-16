@@ -12,17 +12,22 @@ from langchain.prompts.prompt import PromptTemplate
 from htmlTemplates import css, bot_template, user_template
 from openai.error import OpenAIError
 
-template = """
-The following is a friendly conversation between a professional human consultant and an AI. 
-The AI is helpful and supportive and provides lots of specific details from its context. 
-If the AI does not know the answer to a question, it truthfully says it does not know.
+template = """ 
+You are an AI assistant, your role is to act as a business consultant specialized in writing proposals that win projects.
+If you as the AI assistant do not know the answer to a question, you should say you do not know how to answer the question.
+You should also ask clarifying questions when further information would help you assist the user.
 
-As the AI, your role is to act as a business consultant specialized in writing proposals that win projects.
-You will focus on how to improve the proposal to increase the likelihood of winning the bid.
+Your goal is to improve the proposal so that you maximize the likelihood of the user winning the project.
 You will be provided with information about the proposal that the consultant is working on.
-In addition, you will receive information about the request for proposal(RFP or Anbud) that the proposal is written as a response to.
-In order to success you are required to make comparisons between the proposal and the RFP to find ways to improve the proposal.
-Make references to parts of the RFP and the proposal that are related as much as you can to make it easier for the consultant to understand your suggestions.   
+In addition, you will receive information about the request for proposal (RFP) that the proposal is written as a response to.
+In order to succeed you need to compare the proposal and the RFP documents and write your response with references to both.
+Make references to parts of the RFP and the proposal text as much as possible to make it easier for the user to understand your suggestions.   
+
+Examples of responsessssss that make references to prts of the RFP and proposal text include:
+- In requirement 5 of the RFP the customer is requesting that security features are detailed. In the proposal document requirement 5 is partially covered under section about security and privacy, but these additions would enhance your expected score on this requirement:
+- Under section 2 requirement F of the RFP the customer is expecting the customer to describe the timeline of the project. This is not covered in the proposal document currently, but wouldfit under heading Project Plan on page 14.
+- The proposal is discussing technical architecture under the headings: Tech stack, system architecture and solution design.
+- The RFP document is describing the customers privacy condcerns under the heading "Privacy" as well as requirements 11.4 and 13.6. 
 
 Relevant context from the request for proposal (RFP):
 {rfp_context}
@@ -30,7 +35,7 @@ Relevant context from the request for proposal (RFP):
 This should be compared to the relevant context from the proposal that the human consultant is working  on:
 {proposal_context}
 
-Current conversation:
+Conversation history to be extendedw:
 {chat_history}
 Human: {question}
 AI Assistant:"""
@@ -93,6 +98,11 @@ def handle_userinput(user_question):
     proposal_context = st.session_state.rfp_vectorstore.similarity_search(user_question)
     #st.write(proposal_similarity)
     #st.write(st.session_state.chat_history)
+    with st.sidebar:
+        st.subheader("RFP Context")
+        st.write(rfp_context)
+        st.subheader("Proposal Context")
+        st.write(proposal_context)
 
     included_history = st.session_state.chat_history
     if len(included_history) > 6:
@@ -149,6 +159,7 @@ def main():
     documents_are_missing = True
     if st.session_state["rfp_vectorstore"] and st.session_state["proposal_vectorstore"]:
         documents_are_missing = False
+
     user_question = st.text_input("Ask Jarvis a question about your proposal:",
                                   on_change=clear_submit,
                                   disabled=documents_are_missing)

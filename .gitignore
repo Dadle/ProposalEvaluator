@@ -5,3 +5,9 @@
 __pycache__
 Example proposal
 venv
+pyvenv.cfg
+Scripts
+Lib
+Include
+etc
+share
